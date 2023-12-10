@@ -3,12 +3,6 @@ import axios from 'axios';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
-const initialState = {
-  user: null,
-  loading: false,
-  error: null,
-};
-
 export const loginUser = createAsyncThunk(
   'auth/login',
   async (userData, { rejectWithValue }) => {
@@ -38,12 +32,13 @@ export const logoutUser = createAsyncThunk(
 
 export const registerUser = createAsyncThunk(
   'auth/register',
-  async (userData, { rejectWithValue }) => {
+  async (userData, { rejectWithValue, dispatch }) => {
     try {
       const response = await axios.post(
         `${API_BASE_URL}/users/signup`,
         userData
       );
+      dispatch(setUser(response.data));
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -53,8 +48,16 @@ export const registerUser = createAsyncThunk(
 
 const authSlice = createSlice({
   name: 'auth',
-  initialState,
-  reducers: {},
+  initialState: {
+    user: null,
+    loading: false,
+    error: null,
+  },
+  reducers: {
+    setUser: (state, action) => {
+      state.user = action.payload;
+    },
+  },
   extraReducers: builder => {
     builder
       .addCase(loginUser.pending, state => {
@@ -95,6 +98,7 @@ const authSlice = createSlice({
 
 export const selectUser = state => state.auth.user;
 export const selectIsRefreshing = state => state.auth.loading;
-export const selectIsAuthenticated = state => state.auth?.user !== null;
+export const selectIsAuthenticated = state => state.auth.user !== null;
+export const { setUser } = authSlice.actions;
 
 export default authSlice.reducer;

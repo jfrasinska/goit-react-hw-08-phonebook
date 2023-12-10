@@ -1,0 +1,18 @@
+.contacts-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.contacts-heading {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.contacts-section {
+  display: flex;
+  flex-direction: column;
+}

@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { createContact } from '../../Redux/reducers/contactSlice';
+import {
+  createContact,
+  fetchContacts,
+} from '../../Redux/reducers/contactSlice';
 import './ContactForm.css';
 
 const ContactForm = () => {
@@ -17,11 +20,18 @@ const ContactForm = () => {
     }
   };
 
+  const isNameValid = () =>
+    /^[a-zA-Za-яА-Я]+(['-][a-zA-Za-яА-Я]+)*$/.test(name.trim());
+  const isNumberValid = () =>
+    /[+]?[0-9]{1,4}[-.\s]?[(]?[0-9]{1,3}[)]?[-.\s]?[0-9]{1,4}[-.\s]?[0-9]{1,4}[-.\s]?[0-9]{1,9}/.test(
+      number.trim()
+    );
+
   const handleSubmit = async e => {
     e.preventDefault();
 
-    if (name.trim() === '' || number.trim() === '') {
-      alert('Please enter a valid name and number.');
+    if (!isNameValid() || !isNumberValid()) {
+      alert('Please enter valid name and number.');
       return;
     }
 
@@ -32,6 +42,7 @@ const ContactForm = () => {
 
     try {
       await dispatch(createContact(newContact));
+      await dispatch(fetchContacts());
       setName('');
       setNumber('');
     } catch (error) {
@@ -48,7 +59,6 @@ const ContactForm = () => {
           name="name"
           value={name}
           onChange={handleInputChange}
-          pattern="^[a-zA-Za-яА-Я]+(['-][a-zA-Za-яА-Я]+)*$"
           title="Name may contain only letters, apostrophe, dash and spaces."
           required
         />
@@ -60,7 +70,6 @@ const ContactForm = () => {
           name="number"
           value={number}
           onChange={handleInputChange}
-          pattern="[+]?[0-9]{1,4}[-.\s]?[(]?[0-9]{1,3}[)]?[-.\s]?[0-9]{1,4}[-.\s]?[0-9]{1,4}[-.\s]?[0-9]{1,9}"
           title="Phone number must be digits and can start with +"
           required
         />

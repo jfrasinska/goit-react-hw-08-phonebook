@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { loginUser } from '../../Redux/reducers/authSlice';
+import './Login.css';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -31,17 +32,16 @@ const Login = () => {
 
     try {
       await dispatch(loginUser(userData));
-      // Jeśli logowanie się powiedzie, możesz przekierować użytkownika lub podjąć inne akcje
+      window.location.href = '/contacts';
     } catch (error) {
       console.error('Error logging in:', error.message);
-      // Możesz obsłużyć błędy logowania tutaj
     }
   };
 
   return (
-    <div>
+    <div className="login-container">
       <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="login-form">
         <label>
           Email:
           <input
@@ -62,7 +62,9 @@ const Login = () => {
             required
           />
         </label>
-        <button type="submit">Login</button>
+        <button type="submit" className="login-button">
+          Login
+        </button>
       </form>
     </div>
   );

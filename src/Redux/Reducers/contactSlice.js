@@ -12,7 +12,7 @@ export const fetchContacts = createAsyncThunk(
     try {
       const response = await axios.get(`${API_BASE_URL}/contacts`, {
         headers: {
-          Authorization: user.token ? `Bearer ${user.token}` : '', // Dodaj token autoryzacyjny do nagłówka
+          Authorization: user.token ? `Bearer ${user.token}` : '',
         },
       });
       return response.data;
@@ -24,9 +24,20 @@ export const fetchContacts = createAsyncThunk(
 
 export const createContact = createAsyncThunk(
   'contacts/createContact',
-  async newContact => {
+  async (newContact, { getState }) => {
+    const user = selectUser(getState());
+    console.log('User Token:', user.token);
+
     try {
-      const response = await axios.post(`${API_BASE_URL}/contacts`, newContact);
+      const response = await axios.post(
+        `${API_BASE_URL}/contacts`,
+        newContact,
+        {
+          headers: {
+            Authorization: user.token ? `Bearer ${user.token}` : '',
+          },
+        }
+      );
       return response.data;
     } catch (error) {
       throw new Error('Error creating contact');
@@ -36,9 +47,15 @@ export const createContact = createAsyncThunk(
 
 export const deleteContact = createAsyncThunk(
   'contacts/deleteContact',
-  async id => {
+  async (id, { getState }) => {
+    const user = selectUser(getState());
+
     try {
-      await axios.delete(`${API_BASE_URL}/contacts/${id}`);
+      await axios.delete(`${API_BASE_URL}/contacts/${id}`, {
+        headers: {
+          Authorization: user.token ? `Bearer ${user.token}` : '',
+        },
+      });
       return id;
     } catch (error) {
       throw new Error('Error deleting contact');

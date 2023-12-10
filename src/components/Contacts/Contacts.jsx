@@ -1,15 +1,16 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { selectUser } from '../../Redux/reducers/authSlice';
+import ContactList from '../ContactList/ContactList';
+import ContactForm from '../ContactForm/ContactForm';
+import ContactFilter from '../ContactFilter/ContactFilter';
+import './Contacts.css';
 
 const Contacts = () => {
-  const user = useSelector(selectUser);
-
   return (
-    <div>
-      <h2>Contacts</h2>
-      <p>User: {user.email}</p>
-      {/* Add your contacts management components here */}
+    <div className="contacts-container">
+      <h2 className="contacts-heading">Contacts</h2>
+      <ContactForm />
+      <ContactFilter />
+      <ContactList />
     </div>
   );
 };
