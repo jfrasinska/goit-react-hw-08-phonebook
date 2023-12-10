@@ -1,17 +1,25 @@
+// App.jsx
 import React from 'react';
-import ContactForm from '../ContactForm/ContactForm';
-import ContactList from '../ContactList/ContactList';
-import ContactFilter from '../ContactFilter/ContactFilter';
-import './App.css';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Home from '../Home/Home';
+import Navigation from '../Navigation/Navigation';
+import Register from '../Register/Register';
+import Login from '../Login/Login';
+import Contacts from '../Contacts/Contacts';
+import UserMenu from '../UserMenu/UserMenu';
 
 const App = () => {
   return (
-    <div className="wrapper">
-      <h1>Contact Book App</h1>
-      <ContactForm />
-      <ContactFilter />
-      <ContactList />
-    </div>
+    <Routes>
+      <Route path="/" element={<Navigation />}>
+        <Route index element={<Home />} />
+        <Route path="register" element={<Register />} />
+        <Route path="login" element={<Login />} />
+        <Route path="contacts" element={<Contacts />} />
+        <Route path="usermenu" element={<UserMenu />} />
+      </Route>
+      <Route path="*" element={<Navigate to="/" />} />
+    </Routes>
   );
 };
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setFilter } from '../../Redux/Reducers/filterSlice';
+import { setFilter } from '../../Redux/reducers/filterSlice';
 import './ContactFilter.css';
 
 const ContactFilter = () => {

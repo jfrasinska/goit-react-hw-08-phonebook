@@ -1,3 +1,3 @@
-import { addContact, deleteContact } from '../Reducers/contactSlice';
+import { addContact, deleteContact } from '../reducers/contactSlice';
 
 export { addContact, deleteContact };

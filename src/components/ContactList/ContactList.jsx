@@ -3,17 +3,21 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   fetchContacts,
   deleteContact,
-} from '../../Redux/Reducers/contactSlice';
+} from '../../Redux/reducers/contactSlice';
 import './ContactList.css';
+import { selectUser } from '../../Redux/reducers/userSlice';
 
 const ContactList = () => {
   const dispatch = useDispatch();
   const contacts = useSelector(state => state.contacts.contacts);
   const filter = useSelector(state => state.filter.filter);
+  const user = useSelector(selectUser);
 
   useEffect(() => {
-    dispatch(fetchContacts());
-  }, [dispatch]);
+    if (user) {
+      dispatch(fetchContacts());
+    }
+  }, [dispatch, user]);
 
   const handleDeleteContact = id => {
     dispatch(deleteContact(id));
