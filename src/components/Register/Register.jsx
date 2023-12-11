@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { registerUser } from '../../Redux/Reducers/authSlice';
+import { useNavigate } from 'react-router-dom';
 import './Register.css';
 
 const Register = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -25,8 +27,11 @@ const Register = () => {
 
     try {
       const response = await dispatch(registerUser(formData));
+
       if (registerUser.fulfilled.match(response)) {
-        window.location.href = '/navigation';
+        localStorage.setItem('token', response.payload.token);
+
+        navigate('/navigation');
       }
     } catch (error) {
       console.error('Błąd rejestracji:', error);

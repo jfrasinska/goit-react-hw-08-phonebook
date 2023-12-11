@@ -3,7 +3,6 @@ import axios from 'axios';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
-// Async thunk do pobierania użytkownika po zalogowaniu
 export const fetchUser = createAsyncThunk(
   'auth/fetchUser',
   async (_, { getState }) => {
@@ -21,7 +20,6 @@ export const fetchUser = createAsyncThunk(
   }
 );
 
-// Async thunk do logowania
 export const loginUser = createAsyncThunk(
   'auth/login',
   async (userData, { rejectWithValue, dispatch }) => {
@@ -30,7 +28,7 @@ export const loginUser = createAsyncThunk(
         `${API_BASE_URL}/users/login`,
         userData
       );
-      dispatch(fetchUser()); // Po zalogowaniu pobierz dane użytkownika
+      dispatch(fetchUser());
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -38,28 +36,32 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-// Async thunk do wylogowywania
 export const logoutUser = createAsyncThunk(
   'auth/logout',
-  async (_, { rejectWithValue }) => {
+  async (_, { rejectWithValue, getState, dispatch }) => {
+    const token = selectToken(getState());
     try {
-      await axios.post(`${API_BASE_URL}/users/logout`);
+      await axios.post(`${API_BASE_URL}/users/logout`, null, {
+        headers: {
+          Authorization: token ? `Bearer ${token}` : '',
+        },
+      });
+      dispatch(fetchUser());
       return null;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response?.data || 'Error logging out');
     }
   }
 );
 
 export const registerUser = createAsyncThunk(
   'auth/register',
-  async (userData, { rejectWithValue, dispatch }) => {
+  async (userData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
         `${API_BASE_URL}/users/signup`,
         userData
       );
-      dispatch(fetchUser());
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
