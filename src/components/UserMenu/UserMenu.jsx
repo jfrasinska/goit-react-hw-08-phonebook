@@ -1,14 +1,17 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { logoutUser, selectUser } from '../../Redux/reducers/authSlice'; // Zmieniono import
+import { logoutUser, selectUser } from '../../Redux/Reducers/authSlice';
 
 const UserMenu = () => {
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
 
-  const handleLogout = () => {
-    // Dispatch the logout action
-    dispatch(logoutUser());
+  const handleLogout = async () => {
+    try {
+      await dispatch(logoutUser());
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
   };
 
   return (

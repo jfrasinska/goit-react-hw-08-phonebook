@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import {
   createContact,
   fetchContacts,
-} from '../../Redux/reducers/contactSlice';
+} from '../../Redux/Reducers/contactSlice';
 import './ContactForm.css';
 
 const ContactForm = () => {

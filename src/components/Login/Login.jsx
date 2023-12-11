@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { loginUser } from '../../Redux/reducers/authSlice';
+import { useNavigate } from 'react-router-dom';
+import { loginUser } from '../../Redux/Reducers/authSlice';
 import './Login.css';
 
 const Login = () => {
   const dispatch = useDispatch();
   const [email, setEmail] = useState('');
+  const navigate = useNavigate();
   const [password, setPassword] = useState('');
 
   const handleInputChange = e => {
@@ -32,7 +34,7 @@ const Login = () => {
 
     try {
       await dispatch(loginUser(userData));
-      window.location.href = '/contacts';
+      navigate('/contacts');
     } catch (error) {
       console.error('Error logging in:', error.message);
     }

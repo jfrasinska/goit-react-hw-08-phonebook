@@ -3,14 +3,34 @@ import axios from 'axios';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
+// Async thunk do pobierania użytkownika po zalogowaniu
+export const fetchUser = createAsyncThunk(
+  'auth/fetchUser',
+  async (_, { getState }) => {
+    const token = selectToken(getState());
+    try {
+      const response = await axios.get(`${API_BASE_URL}/users/current`, {
+        headers: {
+          Authorization: token ? `Bearer ${token}` : '',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error('Error fetching user');
+    }
+  }
+);
+
+// Async thunk do logowania
 export const loginUser = createAsyncThunk(
   'auth/login',
-  async (userData, { rejectWithValue }) => {
+  async (userData, { rejectWithValue, dispatch }) => {
     try {
       const response = await axios.post(
         `${API_BASE_URL}/users/login`,
         userData
       );
+      dispatch(fetchUser()); // Po zalogowaniu pobierz dane użytkownika
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -18,6 +38,7 @@ export const loginUser = createAsyncThunk(
   }
 );
 
+// Async thunk do wylogowywania
 export const logoutUser = createAsyncThunk(
   'auth/logout',
   async (_, { rejectWithValue }) => {
@@ -38,7 +59,7 @@ export const registerUser = createAsyncThunk(
         `${API_BASE_URL}/users/signup`,
         userData
       );
-      dispatch(setUser(response.data));
+      dispatch(fetchUser());
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -53,13 +74,19 @@ const authSlice = createSlice({
     loading: false,
     error: null,
   },
-  reducers: {
-    setUser: (state, action) => {
-      state.user = action.payload;
-    },
-  },
+  reducers: {},
   extraReducers: builder => {
     builder
+      .addCase(fetchUser.pending, state => {
+        state.loading = true;
+      })
+      .addCase(fetchUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
+      .addCase(fetchUser.rejected, state => {
+        state.loading = false;
+      })
       .addCase(loginUser.pending, state => {
         state.loading = true;
       })
@@ -97,8 +124,8 @@ const authSlice = createSlice({
 });
 
 export const selectUser = state => state.auth.user;
-export const selectIsRefreshing = state => state.auth.loading;
-export const selectIsAuthenticated = state => state.auth.user !== null;
-export const { setUser } = authSlice.actions;
+export const selectIsLoading = state => state.auth.loading;
+export const selectError = state => state.auth.error;
+export const selectToken = state => state.auth.user?.token;
 
 export default authSlice.reducer;

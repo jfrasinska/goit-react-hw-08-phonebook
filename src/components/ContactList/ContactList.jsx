@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   fetchContacts,
   deleteContact,
-} from '../../Redux/reducers/contactSlice';
+} from '../../Redux/Reducers/contactSlice';
 import './ContactList.css';
-import { selectUser } from '../../Redux/reducers/userSlice';
+import { selectUser } from '../../Redux/Reducers/authSlice';
 
 const ContactList = () => {
   const dispatch = useDispatch();
